@@ -1,0 +1,966 @@
+/* class colors */
+.class-dk {background: #c41e3a;	color: #fff;}
+.class-dh {background: #a330c9;	color: #fff;}
+.class-druid {background: #ff7c0a;	color: #000;}
+.class-evoker {background: #33937f;	color: #fff;}
+.class-hunter {background: #aad372;	color: #000;}
+.class-mage {background: #3fc7eb;	color: #000;}
+.class-monk {background: #00ff98;	color: #000;}
+.class-paladin {background: #f48cba;	color: #000;}
+.class-priest {background: #ffffff;	color: #000;}
+.class-rogue {background: #fff468;	color: #000;}
+.class-shaman {background: #0070dd;	color: #fff;}
+.class-warlock {background: #8788ee;	color: #fff;}
+.class-warrior {background: #c69b6d;	color: #000;}
+.class- {background-color: #fbe4a3; color: #000;}
+
+/* light class colors */
+.class-dk-light {background: #f1d9dd;	color: #000;}
+.class-dh-light {background: #f8effb;	color: #000;}
+.class-druid-light {background: #fff3e8;	color: #000;}
+.class-evoker-light {background: #e5efed;	color: #000;}
+.class-hunter-light {background: #ecf3e2;	color: #000;}
+.class-mage-light {background: #def7fd;	color: #000;}
+.class-monk-light {background: #dafff0;	color: #000;}
+.class-paladin-light {background: #ffeef5;	color: #000;}
+.class-priest-light {background: #ffffff;	color: #000;}
+.class-rogue-light {background: #fffcd9;	color: #000;}
+.class-shaman-light {background: #cfe1f3;	color: #000;}
+.class-warlock-light {background: #d3d4f7;	color: #000;}
+.class-warrior-light {background: #ebe3d9;	color: #000;}
+.class--light {background-color: #fcf0d0;	color: #000;}
+
+
+
+
+:root {
+	--header-bgcolor: #e9e9e9;
+	--menupad: 8px;
+	--spell-row-height: 18px;
+	--events-column-width: 16px;
+	--player-column-width: 200px;
+	--encounter-events-height: 250px;
+	--timeline-time-height: 40px;
+	--timeline-hover-color: rgba(0, 133, 242, .06);
+	--link-color: rgb(16, 24, 240);
+	--ui-state-active-bg: #007fff;
+	--ui-state-active-fg: #fff;
+	--max-encounter-time: 900;
+
+	/* class colors */
+	/* hex RRGGBB */
+	--color-dk: #c41e3a;
+	--color-dh: #a330c9;
+	--color-druid: #ff7c0a;
+	--color-evoker: #33937f;
+	--color-hunter: #aad372;
+	--color-mage: #3fc7eb;
+	--color-monk: #00ff98;
+	--color-paladin: #f48cba;
+	--color-priest: #ffffff;
+	--color-rogue: #fff468;
+	--color-shaman: #0070dd;
+	--color-warlock: #8788ee;
+	--color-warrior: #c69b6d;
+	/* rgb */
+	/*
+	--color-dk: 196,30,58;
+	--color-dh: 163,48,201;
+	--color-druid: 255,124,10;
+	--color-evoker: 51,147,127;
+	--color-hunter: 170,211,114;
+	--color-mage: 63,199,235;
+	--color-monk: 0,255,152;
+	--color-paladin: 244,140,186;
+	--color-priest: 255,255,255;
+	--color-rogue: 255,244,104;
+	--color-shaman: 0,112,221;
+	--color-warlock: 0,112,221;
+	--color-warrior: 198,155,109;
+	*/
+}
+/* jquery ui overrides */
+.ui-widget {
+	font-family: "Roboto Condensed", system-ui, sans-serif;
+}
+
+
+
+HTML, BODY {
+	margin: 0;
+	height: 100%;
+}
+
+BODY {
+	color: #000;
+	font-family: "Roboto Condensed", system-ui, sans-serif;
+	font-size: 14px;
+	font-optical-sizing: auto;
+}
+
+A {
+	color: var(--link-color);
+}
+A:hover {
+	color: var(--link-color); /*#c41e3a*/
+}
+
+.hidden {
+	display: none;
+}
+
+.select {
+	border-radius: 3px;
+	border: 1px solid #c5c5c5;
+	cursor: pointer;
+	padding: 4px 4px;
+
+	font-family: "Roboto Condensed", system-ui, sans-serif;
+	font-size: 14px;
+}
+.select-multispell {
+	border: 0;
+	height: var(--spell-row-height);
+	width: 100%;
+	font-family: "Roboto Condensed", system-ui, sans-serif;
+	direction: rtl; /* arrow on left side */
+	font-weight: inherit; /* so mousing over the row bolds the dropdown, too */
+}
+.select-multispell OPTION {
+	direction: ltr;
+}
+
+#main {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+#belowhead {
+	flex: 1;
+	overflow: auto;
+}
+#belowhead > DIV {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.players-col {
+	position: -webkit-sticky;
+	position: sticky;
+	left: 0px;
+	background-color: white;
+	width: var(--player-column-width);
+	min-width: var(--player-column-width);
+	max-width: var(--player-column-width);
+	white-space: nowrap;
+	border-right: 1px solid #999;
+	cursor: default;
+	z-index: 5; /* must be higher than: #spellsarea TD.spellsarea-td > DIV > SPAN::before */
+	user-select: none;
+}
+
+.players-col > DIV {
+	outline: 1px solid rgba(0, 0, 0, .25);
+	height: var(--spell-row-height);
+	position: relative;
+	padding-left: 3px;
+	/* overflow: hidden;	may not need this?  Turned off trying to add spellchoice dropdown */
+}
+.players-col > DIV > B {
+	display: inline-block;
+	position: absolute;
+	left: var(--player-column-width);
+	padding: 0px 4px;
+	height: var(--spell-row-height);
+	color: #fff;
+	background-color: #555;
+	text-align: center;
+	z-index: 1;
+
+	/* for now, turn this feature off */
+	display: none;
+}
+
+/* the link to spellid reference site if hovered over the spell name column */
+.players-col > DIV > A {
+	text-decoration: none;
+	color: inherit;
+	background: inherit;
+}
+
+
+#spellsarea SMALL {
+	display: inline-block;
+	font-size: 12px;
+	/* line-height: 12px; */
+	height: var(--spell-row-height);
+	padding: 0 3px;
+	/* margin: 3px; */
+	vertical-align: top;
+
+	/* color: #000; */
+	color: inherit; /* uses same color as parent (class color) */
+	/* background: #ddd; */
+	background: inherit; /* uses same color as parent (class color) */
+
+	/* outline: 1px solid rgba(0,0,0,.25); */
+	border-radius: 4px;
+}
+/* this SMALL is for the 1st column only.  Displays player name and CD mm:ss. */
+.players-col SMALL {
+	position: absolute;
+	right: 0;
+}
+.players-col SAMP { /* the spell cooldown value mm:ss */
+	font-family: "Roboto Condensed", monospace;
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 4px;
+	/* background-color: inherit; */	/* SMALL (parent) already handling this */
+	/* position: absolute; */
+	/* right: 0; */
+}
+
+
+/* a fake dropdown for mutually exclusive players spells.  Starts hidden. */
+.players-col UL {
+	display: none;
+	position: absolute;
+	width: var(--player-column-width);
+	left: var(--player-column-width);
+	top: -3px;
+	margin: 0;
+	padding: 0;
+	font-weight: normal; /* don't go bold on TD:hover */
+	list-style-type: none;
+	box-shadow: 8px 8px 10px rgba(0,0,0,.25);
+	border: 1px solid #000;
+	border-top: 3px solid #000;
+}
+.players-col UL LI {
+	padding: 0 3px;
+	cursor: pointer;
+}
+.players-col UL LI:hover {
+	font-weight: bold;
+}
+.spellchoice {
+	cursor: pointer;
+}
+/* for the currently opened fake dropdown */
+.spellchoice.opened {
+	outline: 3px solid black;
+}
+/* put an arrow at left side, like <select> RTL would have */
+.spellchoice::before {
+	content: '\25B6  ';	/* down: 25BC; up: 25B2; right: 25B6; left: 25C0 */
+	padding: 0 0 0 3px;
+}
+.spellchoice.opened::before {
+	content: '\25C0  ';	/* down: 25BC; up: 25B2; right: 25B6; left: 25C0 */
+}
+
+
+
+
+#spellsarea > DIV > SMALL {
+	margin: 1px 3px;
+}
+
+#right-of-players {
+	flex: 1;
+	overflow: auto;
+}
+
+#grid {
+	height: 100%;
+	/* min-height: 1600px; */
+	overflow: auto;
+}
+
+.title {
+	margin: var(--menupad);
+	font-weight: bold;
+}
+.title A {
+	cursor: help;
+	color: inherit;
+}
+FOOTER {
+	margin: 2px var(--menupad);
+	font-size: 14px;
+}
+
+#timeline {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+#spellscontainer {	/* deprecated? */
+	flex: 1;
+	overflow: auto;
+	background: #fff;
+}
+
+#spellsarea-wrapper {
+	width: 100%;
+	position: relative;
+	overflow: auto;
+	/* border: 1px solid black; */
+	white-space: nowrap;
+}
+#spellsarea {
+	border-spacing: 0;
+	min-width: calc( (var(--events-column-width) * var(--max-encounter-time)) + var(--player-column-width) + 1px );	/* so background image goes all the way.  A 900-second encounter (15min).  +1px for border-right on #encounter-head-spacer matching border-right on .players-col */
+
+	height: 100%;
+
+	background-color: #fff;
+	background-image: linear-gradient(90deg, #f8f8f8 1px, transparent .1em), linear-gradient(#f8f8f8 1px, transparent .1em);
+
+	/* vertical grid only */
+	/* background-image: linear-gradient(90deg, #efefef 1px, transparent .1em); */
+	/* background-size: var(--events-column-width) 100%; */
+
+	/* horizontal and vertical grid lines */
+	background-size: var(--events-column-width) var(--spell-row-height);
+	background-attachment: scroll;
+	background-position: calc(var(--player-column-width) + 1px) 0;
+}
+
+/* note: when #spellsarea *without* "show-timeline-bars" class, it will not show the :hover styling. (e.g. when we're dragging a spell) */
+#spellsarea.show-timeline-bars TR:hover {
+	background-color: var(--timeline-hover-color);
+	font-weight: bold;
+}
+.tr-nohover:hover {
+	font-weight: inherit;
+}
+#spellsarea TR.collapsed {
+	/* note: not worth trying to mess with height here */
+	display: none;
+}
+
+#spellsarea TD {
+	padding: 0;
+	/* position: relative; */
+}
+#spellsarea TD.spellsarea-td {
+	position: relative;
+}
+#spellsarea TD.spellsarea-td > DIV {
+	/* background color is set, class-specific, inline */
+	position: absolute;
+	min-width: var(--player-column-width);
+	outline: 1px solid rgba(0, 0, 0, .25);
+	height: var(--spell-row-height);
+
+	/* add ticks every 10 seconds */
+	background-image: linear-gradient(90deg, #888 1px, transparent .1em);
+	background-size: calc(var(--events-column-width)* 10) 50%;
+	background-repeat: repeat-x;
+	background-position-y: bottom;
+	background-position-x: right;
+}
+#spellsarea TD.spellsarea-td > DIV > SPAN {
+	/* background color is set, class-specific, inline */
+	display: inline-block;
+	height: var(--spell-row-height);
+	padding: 0 3px;
+}
+/* make a little upper-left corner that sticks out of the spell bar so we can tell visually if spells overlap [testing] */
+#spellsarea TD.spellsarea-td > DIV > SPAN::before {
+	content: "\25C6";
+	position: absolute;
+	bottom: 0;
+	top: -10px;
+	left: -7px;
+	z-index: 4;
+	font-size: 16px;
+	color: #000;
+	background: transparent;
+	pointer-events: none;
+}
+#spellsarea A.menu {
+	color: #000;
+	display: inline-block;
+	width: 16px;
+	text-align: center;
+	text-decoration: none;
+}
+#spellsarea A.menu:hover {
+	font-weight: bold;
+}
+#spellsarea TD.spellsarea-td > DIV > SAMP {
+	color: #000;
+	position: absolute;
+	bottom: 0;
+	padding-left: 6px;
+	pointer-events: none; /* to prevent right-click menu on cooldown bar's time ticks */
+}
+/* menu on spellsarea divs */
+#spellsarea TD.spellsarea-td > DIV UL {
+	display: none; /* start hidden */
+	z-index: 999;
+	background: #fff;
+	position: absolute;
+	left: -6px;
+	top: -2px;
+	border: 1px solid rgba(0, 0, 0, .5);
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, .25);
+	font-weight: normal;
+	list-style-type: none;
+	cursor: default;
+}
+#spellsarea TD.spellsarea-td > DIV UL LI {
+	padding: 2px 6px;
+}
+#spellsarea TD.spellsarea-td CODE {
+	background: inherit; /* gets same bg color as the parent cd bar */
+	position: relative;
+	color: #000;	/* no matter the class, always black since this appears on the lighter bar area */
+	margin-left: 10px;
+}
+#spellsarea TD.spellsarea-td CODE > SPAN {
+	position: absolute; /* need to compete with <samp> for visibility */
+	z-index: 2; /* must be higher than #spellsarea TD.spellsarea-td > DIV > SAMP */
+	background: inherit; /* gets same bg color as the parent cd bar, to overlay any cooldown remaining ticks on this bar */
+}
+
+#encounter-menu {
+	margin: var(--menupad);
+	flex: 1;
+	user-select: none;
+}
+#encounter-menu .head, #players-menu .head {
+	margin-bottom: 4px;
+}
+#players-menu {
+	margin: var(--menupad);
+}
+
+.menu-icons {
+	height: 20px;
+	margin-bottom: 6px;
+}
+.menu-icons UL {
+	margin: 0;
+	padding: 0;
+	height: 20px;
+}
+.menu-icons UL LI {
+	display: inline-block;
+	height: 20px;
+}
+.menu-icons A {
+	display: inline-block;
+	width: 16px;
+	height: 20px;
+	background-size: 16px 20px;
+	background-repeat: no-repeat;
+	background-position: center;
+	padding: 2px;
+}
+
+.menu-icons A:hover {
+	background-color: lightblue;
+}
+
+.encounter-menu-new {
+	background-image: url(img/new.svg);
+}
+.encounter-menu-rename {
+	background-image: url(img/edit.svg);
+}
+.encounter-menu-copy {
+	background-image: url(img/copy.svg);
+}
+.encounter-menu-import {
+	background-image: url(img/import.svg);
+}
+.encounter-menu-export {
+	background-image: url(img/share.svg);
+}
+.encounter-menu-delete {
+	background-image: url(img/delete.svg);
+}
+
+.player-menu-add {
+	background-image: url(img/add-player.svg);
+}
+.player-menu-remove {
+	background-image: url(img/minus-player.svg);
+}
+.player-menu-rename {
+	background-image: url(img/rename.svg);
+}
+.player-menu-import {
+	background-image: url(img/import.svg);
+}
+.player-menu-export {
+	background-image: url(img/share.svg);
+}
+.player-menu-remove-all {
+	background-image: url(img/delete-all.svg);
+}
+
+
+
+
+#encounter-head {
+	flex: 0;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	background: var(--header-bgcolor);
+}
+#encounter-head > DIV {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+#encounter-head-spacer {
+	width: var(--player-column-width);
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	background: #f5f5f5;
+}
+.mrt-export {
+	margin-top: 24px;
+}
+
+#encounter-select {
+	max-width: calc(var(--player-column-width) - calc(var(--menupad) * 2));
+}
+#encounter-events {
+	flex: 1;
+	overflow: auto;
+	/* we need this element to scroll horizontally in sync with the timeline */
+	height: var(--encounter-events-height);
+	white-space: nowrap;
+}
+#encounter-events-wrapper {
+	height: 100%;
+	background-image: linear-gradient(90deg, #ccc 1px, transparent .1em);
+	background-size: var(--events-column-width) 100%;
+	background-attachment: scroll;
+	position: relative;
+	min-width: calc(var(--events-column-width)* var(--max-encounter-time));	/* so background image goes all the way.  A 900-second encounter (15min) */
+
+	user-select: none;
+}
+#encounter-events-wrapper > DIV {
+	transform: rotate(-90deg);
+	transform-origin: top left;
+	/* width: var(--encounter-events-height); */
+	position: absolute;
+	/* top: 100%; */
+	left: 0;
+	height: var(--events-column-width);
+	white-space: nowrap;
+	overflow: hidden;
+	padding-left: 4px;
+	border-left: 1px solid rgba(128, 128, 128, .25);
+}
+#encounter-events-wrapper > DIV.timeline-time {
+	/* width: var(--timeline-time-height); */
+	width: 100%;	/* 20240819, untested */
+	top: 100%;
+	position: absolute;
+	left: 0;
+}
+#encounter-events-wrapper > DIV.timeline-time:hover {
+	background-color: var(--timeline-hover-color);
+}
+#encounter-events-wrapper > DIV.timeline-event {
+	width: calc(var(--encounter-events-height) - var(--timeline-time-height));
+	top: calc(100% - var(--timeline-time-height));
+	left: var(--timeline-time-height);
+	cursor: pointer;
+}
+
+#encounter-events-wrapper, .spellsarea-td {
+	cursor: cell;
+}
+
+#encounter-events-wrapper.show-timeline-bars > DIV.timeline-event:hover {
+	/* background-color: var(--timeline-hover-color); */
+	outline: 1px solid rgba(0,0,0,.5);
+	font-weight: bold;
+}
+#encounter-events-wrapper.unlocked > DIV.timeline-event {
+	outline: 2px dotted rgba(0,0,0,.5);
+	outline-offset: -1px;
+}
+/* SAA/SAR/etc. events will have different borders vs standard unlocked/draggable events */
+.timeline-event[data-cond="phase"], .timeline-event[data-cond="saa"], .timeline-event[data-cond="sar"], .timeline-event[data-cond="scs"], .timeline-event[data-cond="scc"] {
+	outline: 2px dotted red !important;
+	outline-offset: -1px;
+}
+
+#encounter-events-wrapper > DIV SPAN {
+	margin-right: 6px;
+}
+#encounter-events-wrapper > DIV.edit {
+	cursor: pointer;
+}
+/* damage severity levels. On any element */
+[data-severity="0"] {background-color: rgba(64,128,0, .2);}
+[data-severity="1"] {background-color: rgba(255,255,0, .2);}
+[data-severity="2"] {background-color: rgba(255,192,0, .2);}
+[data-severity="3"] {background-color: rgba(255,128,0, .2);}
+[data-severity="4"] {background-color: rgba(255,64,0, .2);}
+/* [data-severity="5"] {background-color: rgba(255,0,0, .2);} */
+[data-severity="5"] {background-color: rgba(255,0,64, .2);}
+
+#encounter-menu-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	height: 100%;
+}
+#encounter-events-lock {
+	position: absolute;
+	left: calc(var(--player-column-width) - 20px);
+	top: 0;
+}
+#encounter-events-lock A {
+	display: block;
+	width: 16px;
+	height: 20px;
+	padding: 2px;
+	/* background-image: url(img/locked-black.svg);
+	background-size: 16px 20px; */
+	background: url(img/locked-black.svg) no-repeat center /16px 20px;
+}
+#encounter-events-lock.unlocked A {
+	background-image: url(img/unlocked-black.svg);
+}
+#encounter-events-lock A:hover {
+	background-color: lightblue;
+}
+
+#add-player {
+	margin: var(--menupad);
+}
+#add-player-select {
+	max-width: calc(var(--player-column-width) - calc(var(--menupad) * 2));
+}
+.spells-head {
+	padding-left: 4px;
+	color: #fff;
+	background-color: #000;
+	font-weight: bold;
+	text-align: center;
+}
+.spells-head::after { /* missing ".expanded" means collapsed */
+	content: '\25BC  ';	/* down: 25BC; up: 25B2; right: 25B6; left: 25C0 */
+	position: absolute;
+	right: 10px;
+}
+.spells-head.expanded::after {
+	content: '\25B2  ';	/* down: 25BC; up: 25B2; right: 25B6; left: 25C0 */
+}
+
+.draggable {
+	cursor: ew-resize; /* or col-resize? */
+}
+
+#timeline-bar-v, #timeline-bar-h {
+	position: absolute;
+	overflow: hidden;
+	pointer-events: none; /* so clicks on the guide bars aren't registered */
+	z-index: 9; /* must be higher than spells & cooldown bars */
+}
+#timeline-bar-v {
+	background: var(--timeline-hover-color);
+	width: var(--events-column-width);
+	height: 100%;
+}
+#timeline-bar-h {
+	height: var(--spell-row-height);	/* doesn't share bgcolor with vertical bar.  Gets class color */
+	opacity: .5;
+}
+#timeline-bar-h ASIDE {
+	padding-left: 24px;
+}
+#timeline-bar-h SMALL {
+	padding-left: 16px;
+}
+
+#timeline-guide {
+	position: absolute;
+	width: 1px;
+	height: 0px;	/* until it gets sized by a draggable */
+	background: #000;
+	z-index: 50;
+}
+
+.timeline-event-shadow {
+	position: absolute;
+	top: 0;
+	/* width: var(--events-column-width); */	/* looks too busy with full-column-width bar */
+	width: 3px;
+	opacity: .5;
+	pointer-events: none;
+}
+
+/* the context menu when you right-click a spell on the timeline */
+#cdmenu {
+	display: none; /* start hidden */
+	position: absolute;
+	left: -6px;
+	top: -2px;
+	margin: 0;
+	z-index: 999;
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, .5);
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, .25);
+	cursor: default;
+}
+#cdmenu UL {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#cdmenu LI A {
+	display: block;
+	padding: 5px 8px;
+	color: #000;
+	text-decoration: none;
+}
+#cdmenu LI A:hover {
+	background: var(--ui-state-active-bg);
+	color: var(--ui-state-active-fg);
+}
+
+
+
+#mrtnote-overlay {
+	display: none;
+
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	top: 10%;
+	left: 10%;
+	z-index: 100;
+	background: #e5e5e5;
+	box-shadow: 0 0 300px rgba(0, 0, 0, .5);
+}
+#mrtnote-contents {
+	width: 100%;
+	height: 100%;
+}
+#mrtnote-close {
+	position: absolute;
+	right: 0;
+	top: 10px;
+}
+
+
+
+
+
+DIALOG::backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,.5);
+	z-index: 99;
+}
+DIALOG {
+	min-width: 200px;
+	max-width: 340px;
+	padding: 4px 16px;
+
+	z-index: 100;
+	background: #e5e5e5;
+	box-shadow: 10px 10px 10px rgba(0, 0, 0, .5);
+	border: 0;
+	border-radius: 10px;
+}
+DIALOG FORM > DIV {
+	margin: 16px 0;
+}
+LABEL {
+	user-select: none;
+}
+
+#event-dialog INPUT[type="radio"]:checked + LABEL {
+	font-weight: bold;
+}
+#event-dialog INPUT[type="radio"]:checked ~ DIV {/* DIV siblings of radio buttons */
+	display: block;
+	margin-left: 24px;
+}
+#events-dialog .edline {
+	white-space: nowrap;
+}
+.colorblock {
+	display: inline-block;
+	width: 40px;
+	height: 20px;
+	line-height: 20px;
+	vertical-align: bottom;
+	text-align: center;
+	outline: 1px solid rgba(0, 0, 0, .25);
+}
+#edpreview {
+	font-family: monospace;
+	padding: 6px 0;
+}
+.fulljust {
+	display: flex;
+	flex-direction: row;
+}
+.fulljust > DIV {
+}
+.fulljust .right {
+	text-align: right;
+	flex: 1;
+}
+
+DIALOG TEXTAREA {
+	width: 100%;
+	height: 100px;
+}
+
+.event_cond {
+	font-weight: bold;
+	color: #d00;
+}
+.event_mmss {
+	/* font-family: monospace; */
+	font-weight: bold;
+	color: #d00;
+}
+
+.button-save, .button-cancel {
+	border-radius: 3px;
+	padding: 5px 10px;
+}
+.button-save {
+	background-color: #005295;
+	color: #fff;
+}
+.button-cancel {
+	background-color: #eee;
+}
+.ed-delete {
+	display: inline-block;
+	margin-left: 8px;
+}
+
+/* vertical ellipsis button */
+.menubutton {
+	position: relative;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 2px;
+	border-radius: 50%;
+	border: 1px solid #000;
+	border-color: rgba(0,0,0,.2) rgba(0,0,0,.7) rgba(0,0,0,.7) rgba(0,0,0,.2);
+	border-width: 1px;
+	text-decoration: none;
+	text-align: center;
+	color: #000;
+	background-color: rgba(0, 0, 0, .08);
+}
+.menubutton:hover {
+	background: rgba(0,0,0,.16);
+	color: #000;
+}
+
+.menu-options {
+	max-width: 140px;
+	/* position: fixed; */
+	position: absolute;
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, .5);
+}
+/* underlay */
+.menu-backdrop {
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(0,0,0,.25);
+	cursor: default;
+	z-index: 1000; /* must be higher than all other elements except for the menu's UL */
+}
+
+.menu-options UL {
+	position: absolute; /* to have higher z-index than the menu-backdrop */
+	z-index: 1001; /* must be higher than #encounter-menu-options */
+	left: 0;
+	top: 0;
+}
+
+.menu-options A {
+	text-decoration: none;
+}
+
+#players-menu-options {
+	min-width: 260px;
+}
+
+#remove-player-dialog, #custom-action-player-list {
+	min-width: 300px;
+}
+#remove-player-list LABEL, #custom-action-player-list LABEL {
+	margin: 2px 10px 2px 0;
+	display: block;
+}
+
+.spells-head-blank {
+	/* background-size: 9px 9px; */
+	/* background-image: repeating-linear-gradient(45deg, #ddd 0, #ddd 1px, transparent 0, transparent 50%), repeating-linear-gradient(135deg, #ddd 0, #ddd 1px, transparent 0, transparent 50%); */
+	background: #555;
+}
+#custom-action-td {
+	background: rgba(0, 0, 0, .08);
+}
+
+
+#encounter-events-wrapper ASIDE.connector {
+	position: absolute;
+	top: 8px;
+	height: 8px;
+	pointer-events: none;
+	background: rgba(255,0,0,.5);
+	/* box-shadow: 3px 3px 3px rgba(0, 0, 0, .5); */
+}
+#encounter-events-wrapper ASIDE.connector::before, #encounter-events-wrapper ASIDE.connector::after {
+	content: "\1F517";
+	position: absolute;
+	top: -6px;
+	left: -1px;
+	font-size: 14px;
+	height: 14px;
+	width: 14px;
+	color: #000;
+}
+#encounter-events-wrapper ASIDE.connector::after {
+	left: initial;
+	right: 3px;
+}
+
+
+
+
+
+
+/* DARK THEME */
+@media (prefers-color-scheme: dark) {
+	#spellsarea {
+		background-color: #999;
+		background-image: linear-gradient(90deg, #6f6f6f 1px, transparent .1em), linear-gradient(#6f6f6f 1px, transparent .1em);
+	}
+}
+

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<title>Lucky's Cooldown Planner</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+
+<script src="lang/en.js" async="false"></script>
+<!-- fr.htm, (french) for example, would load:
+<script src="lang/fr.js" async="false"></script>
+-->
+<link href="main.css" rel="stylesheet">
+
+<link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+<script src="jquery-ui/external/jquery/jquery.js"></script>
+<script src="jquery-ui/jquery-ui.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+
+<div id="main">
+	<!-- header takes up fixed height at top -->
+
+	<div id="encounter-head">
+		<div>
+			<div id="encounter-head-spacer">
+
+				<div id="encounter-events-lock"><a href="#" title="Lock or unlock draggable encounter events" onclick="return toggleEncounterEventsLock();"></a></div>
+
+				<div id="encounter-menu-wrapper">
+
+					<div class="title"><a href="https://discord.com/users/luckiee." target="_blank">Lucky's</a> Cooldown Planner</div>
+
+					<div id="encounter-menu">
+
+						<div>
+							<div class="head">Encounter:</div>
+							<div class="menu-icons">
+								<ul>
+									<li><a href="#" onclick="newEncounter();" title="New Encounter" class="encounter-menu-new"></a></li>
+									<li><a href="#" onclick="renameEncounter();" title="Rename Encounter" class="encounter-menu-rename"></a></li>
+									<li><a href="#" onclick="copyEncounter();" title="Duplicate Encounter" class="encounter-menu-copy"></a></li>
+									<li><a href="#" onclick="importEncounterDialog();" title="Import Encounter" class="encounter-menu-import"></a></li>
+									<li><a href="#" onclick="exportEncounter();" title="Export Encounter" class="encounter-menu-export"></a></li>
+									<li><a href="#" onclick="deleteEncounter();" title="Delete Encounter" class="encounter-menu-delete"></a></li>
+								</ul>
+							</div>
+							<!--
+							<label for="encounter-select">Encounter:</label> <a title="Encounter menu" class="menubutton" href="javascript:;" onclick="showEncounterMenu(); return false;">&#x2630;</a>
+							<div id="encounter-menu-options" class="menu-options hidden">
+								<div class="menu-backdrop"></div>
+								<ul>
+									<li><div onclick="newEncounter();">New</div></li>
+									<li><div onclick="renameEncounter();">Rename</div></li>
+									<li><div onclick="copyEncounter();">Duplicate</div></li>
+									<li><div onclick="importEncounterDialog();">Import</div></li>
+									<li><div onclick="exportEncounter();">Export</div></li>
+									<li><div onclick="deleteEncounter();">Delete</div></li>
+								</ul>
+							</div>
+							-->
+						</div>
+
+						<div style="max-width: 180px">
+							<select id="encounter-select" name="encounter-select" class="select">
+								<!-- encounter options will go here -->
+							</select>
+						</div>
+						<div class="mrt-export">
+							<button type="button" onclick="generate_MRT_note();">Export MRT Note</button>
+						</div>
+
+					</div><!-- /#encounter-menu -->
+
+					<div id="players-menu">
+						<div>
+							<div class="head">Players:</div>
+							<div class="menu-icons">
+								<ul>
+									<li><a href="#" onclick="showAddPlayerDialog();" title="Add Player" class="player-menu-add"></a></li>
+									<li><a href="#" onclick="showRemovePlayerDialog();" title="Remove Player" class="player-menu-remove"></a></li>
+									<li><a href="#" onclick="showRenamePlayerDialog();" title="Rename a player (keep spec)" class="player-menu-rename"></a></li>
+									<li><a href="#" onclick="importRosterDialog();" title="Import Roster" class="player-menu-import"></a></li>
+									<li><a href="#" onclick="exportRoster();" title="Export Roster" class="player-menu-export"></a></li>
+									<!-- <li><a href="#" onclick="removeAllPlayers();" title="Remove All Players" class="player-menu-remove-all"></a></li> -->
+								</ul>
+							</div>
+
+							<!--
+							<span>Players:</span> <a title="Players menu" class="menubutton" href="javascript:;" onclick="showPlayersMenu(); return false;">&#x2630;</a>
+							<div id="players-menu-options" class="menu-options hidden">
+								<div class="menu-backdrop"></div>
+								<ul>
+									<li><div onclick="showAddPlayerDialog();">Add Player</div></li>
+									<li><div onclick="showRemovePlayerDialog();">Remove Player</div></li>
+									<li><div onclick="showRenamePlayerDialog();">Rename a player (keep spec)</div></li>
+									<li><div onclick="importRosterDialog();">Import Roster</div></li>
+									<li><div onclick="exportRoster();">Export Roster</div></li>
+									<li><div onclick="removeAllPlayers();">Remove All Players</div></li>
+								</ul>
+							</div>
+							-->
+						</div>
+					</div><!-- /players-menu -->
+
+				</div><!-- /#encounter-menu-wrapper -->
+			</div><!-- /#encounter-head-spacer -->
+
+			<div id="encounter-events">
+				<div id="encounter-events-wrapper" class="show-timeline-bars">
+
+					<!-- encounter events will go here -->
+
+				</div><!--/encounter-events-wrapper-->
+			</div><!--/encounter-events-->
+		</div>
+	</div><!--/encounter-head-->
+
+	<!-- the rest of the height used by #belowhead -->
+	<div id="belowhead">
+		<div>
+
+			<div id="spellsarea-wrapper">
+
+				<aside id="timeline-bar-v" style="display: none;"></aside>
+				<aside id="timeline-bar-h" style="display: none;"></aside>
+				<aside id="timeline-guide"></aside>
+				<aside id="cdmenu"><!--menu--></aside>
+
+				<table id="spellsarea" class="show-timeline-bars">
+
+					<!-- spells/actions will go here -->
+
+				</table><!--/#spellsarea-->
+			</div><!--/#spellsarea-wrapper-->
+
+		</div>
+	</div><!--/#belowhead-->
+
+
+	<div id="mrtnote-overlay">
+		<textarea id="mrtnote-contents" onclick="window.getSelection().removeAllRanges(); this.select();"></textarea>
+		<div id="mrtnote-close">Close</div>
+	</div>
+
+
+	<dialog id="event-dialog">
+		<form method="dialog">
+
+			<input type="hidden" id="ed-event-id" value="123a">
+			<input type="hidden" id="ed-timeline"><!-- stores the "x" position on the timeline, but we probably don't need this -->
+
+			<div>
+				<div class="edline">
+					<label for="edname"><b>Event name:</b> <input id="edname" name="edname"></label>
+				</div>
+			</div>
+
+			<div>
+				<div><b>Condition that triggers this event:</b></div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_start" value="start">
+					<label for="edcond_start">Beginning of encounter</label>
+				</div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_phase" value="phase">
+					<label for="edcond_phase">Beginning of phase...</label>
+					<div class="hidden" id="edcond_phase-wrapper">
+						Phase number or name: <input type="text" id="edcond_phase_counter" name="edcond_phase_counter" value="" size="4">
+					</div>
+				</div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_saa" value="saa">
+					<label for="edcond_saa">SAA: Spell Aura Applied on any target...</label>
+					<div class="hidden" id="edcond_saa-wrapper">
+						Aura ID: <input type="text" id="edcond_saa_spellid" name="edcond_saa_spellid" value="" size="6">
+						Occurrence: <input type="text" id="edcond_saa_counter" name="edcond_saa_counter" value="" size="2">
+					</div>
+				</div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_sar" value="sar">
+					<label for="edcond_sar">SAR: Spell Aura Removed from any target...</label>
+					<div class="hidden" id="edcond_sar-wrapper">
+						Aura ID: <input type="text" id="edcond_sar_spellid" name="edcond_sar_spellid" value="" size="6">
+						Occurrence: <input type="text" id="edcond_sar_counter" name="edcond_sar_counter" value="" size="2">
+					</div>
+				</div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_scs" value="scs">
+					<label for="edcond_scs">SCS: Spell Cast Start...</label>
+					<div class="hidden" id="edcond_scs-wrapper">
+						Spell ID: <input type="text" id="edcond_scs_spellid" name="edcond_scs_spellid" value="" size="6">
+						Occurrence: <input type="text" id="edcond_scs_counter" name="edcond_scs_counter" value="" size="2">
+					</div>
+				</div>
+
+				<div class="edline">
+					<input type="radio" name="edcond" id="edcond_scc" value="scc">
+					<label for="edcond_scc">SCC: Spell Cast Success...</label>
+					<div class="hidden" id="edcond_scc-wrapper">
+						Spell ID: <input type="text" id="edcond_scc_spellid" name="edcond_scc_spellid" value="" size="6">
+						Occurrence: <input type="text" id="edcond_scc_counter" name="edcond_scc_counter" value="" size="2">
+					</div>
+				</div>
+
+			</div>
+
+			<div>
+				<label for="edtime">Time from fulfillment of condition (mm:ss): <input id="edtime" name="edtime" size="4"></label>
+			</div>
+
+			<div>
+				<div><b>Damage level / color:</b></div>
+				<label for="edseverity0"><span class="colorblock" data-severity="0"><input type="radio" name="edseverity" id="edseverity0" value="0"></span></label>
+				<label for="edseverity1"><span class="colorblock" data-severity="1"><input type="radio" name="edseverity" id="edseverity1" value="1"></span></label>
+				<label for="edseverity2"><span class="colorblock" data-severity="2"><input type="radio" name="edseverity" id="edseverity2" value="2"></span></label>
+				<label for="edseverity3"><span class="colorblock" data-severity="3"><input type="radio" name="edseverity" id="edseverity3" value="3"></span></label>
+				<label for="edseverity4"><span class="colorblock" data-severity="4"><input type="radio" name="edseverity" id="edseverity4" value="4"></span></label>
+				<label for="edseverity5"><span class="colorblock" data-severity="5"><input type="radio" name="edseverity" id="edseverity5" value="5"></span></label>
+			</div>
+
+			<div>
+				<b>MRT preview:</b>
+				<div id="edpreview"></div>
+			</div>
+
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeEventDialog();">Cancel</button>
+					<span class="ed-delete"><a href="#" onclick="deleteEvent(); return false;">Delete this event</a></span>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="saveEvent()" class="button-save">Save</button>
+				</div>
+			</div>
+
+		</form>
+	</dialog><!--#/event-dialog-->
+
+
+	<dialog id="import-encounter-dialog">
+		<form method="dialog">
+			<div><b>Import Encounter:</b></div>
+			<div>
+				<textarea id="import-encounter-text" placeholder="(Paste import text here OR upload a file below)" autofocus></textarea>
+			</div>
+			<div>OR</div>
+			<div>
+				<b>File to import:</b> <input type="file" id="import-encounter-file">
+			</div>
+
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeImportDialog()">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="importEncounter(document.getElementById('import-encounter-text').value);" class="button-save">Import</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/import-encounter-dialog-->
+
+
+	<dialog id="import-roster-dialog">
+		<form method="dialog">
+			<div><b>Import Roster:</b></div>
+			<div>
+				<textarea id="import-roster-text" placeholder="(Paste import text here OR upload a file below)" autofocus></textarea>
+			</div>
+			<div>OR</div>
+			<div>
+				<b>File to import:</b> <input type="file" id="import-roster-file">
+			</div>
+
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeImportRosterDialog();">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="importRoster(document.getElementById('import-roster-text').value);" class="button-save">Import</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/import-roster-dialog-->
+
+
+	<dialog id="add-player-dialog">
+		<form method="dialog">
+			<div>
+				<label for="add-player-name"><b>Player Name:</b> </label>
+				<input id="add-player-name" name="add-player-name" autofocus>
+			</div>
+			<div>
+				<label for="add-player-select"><b>Class & Spec:</b></label>
+				<select id="add-player-select" class="select">
+					<option value="dk">Death Knight</option>
+					<option value="dh">Demon Hunter</option>
+					<option value="druid-balance">Druid - Balance</option>
+					<option value="druid-feral">Druid - Feral</option>
+					<option value="druid-guardian">Druid - Guardian</option>
+					<option value="druid-resto">Druid - Restoration</option>
+					<option value="evoker-aug">Evoker - Augmentation</option>
+					<option value="evoker-pres">Evoker - Preservation</option>
+					<option value="evoker-dev">Evoker - Devastation</option>
+					<option value="hunter">Hunter</option>
+					<option value="mage">Mage</option>
+					<option value="monk-bm">Monk - Brewmaster</option>
+					<option value="monk-mw">Monk - Mistweaver</option>
+					<option value="monk-ww">Monk - Windwalker</option>
+					<option value="paladin-holy">Paladin - Holy</option>
+					<option value="paladin-ret">Paladin - Retribution</option>
+					<option value="paladin-prot">Paladin - Protection</option>
+					<option value="priest-disc">Priest - Disc</option>
+					<option value="priest-holy">Priest - Holy</option>
+					<option value="priest-shadow">Priest - Shadow</option>
+					<option value="rogue">Rogue</option>
+					<option value="shaman-resto">Shaman - Resto</option>
+					<option value="shaman-enh">Shaman - Enhancement</option>
+					<option value="shaman-ele">Shaman - Elemental</option>
+					<option value="warlock">Warlock</option>
+					<option value="warrior">warrior</option>
+				</select>
+			</div>
+			<div class="fulljust">
+				<div>
+					<button type="button" onclick="closeAddPlayerDialog()" class="button-cancel">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="submitAddPlayer();" class="button-save">Add Player</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/add-player-dialog-->
+
+
+	<dialog id="remove-player-dialog">
+		<form method="dialog">
+			<div>
+				<b>Select player(s) to remove:</b>
+			</div>
+			<div id="remove-player-list">
+				<!--players checkboxes will go here-->
+			</div>
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeRemovePlayerDialog();">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="removeSelectedPlayers();" class="button-save">Remove Selected Player(s)</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/remove-player-dialog-->
+
+
+	<dialog id="rename-player-dialog">
+		<form method="dialog">
+			<div>
+				<b>Select player to rename:</b>
+			</div>
+			<div id="rename-player-list">
+				<select id="rename-player-select" class="select">
+					<!--players dropdown options will go here-->
+				</select>
+			</div>
+			<div>
+				<b>Change player name to:</b><br>
+				<input id="rename-player-name" name="rename-player-name">
+			</div>
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeRenamePlayerDialog();">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="renameSelectedPlayer();" class="button-save">Rename Selected Player</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/rename-player-dialog-->
+
+
+	<dialog id="custom-action-dialog">
+		<form method="dialog">
+			<input type="hidden" name="custom-action-col" id="custom-action-col" value="">
+			<input type="hidden" name="custom-action-old-id" id="custom-action-old-id" value="">
+			<div>
+				<label for="custom-action-note"><b>Custom action:</b><br>This will be shown in plain text in the MRT Note.<br><i>Example: "Personals" or "Trinket" or "Dispels"</i>
+					<br>
+					<input id="custom-action-note" name="custom-action-note">
+				</label>
+			</div>
+			<div>
+				<b>Show this note to these players:</b>
+			</div>
+			<div id="custom-action-player-list">
+				<!--players checkboxes will go here-->
+			</div>
+			<div class="fulljust">
+				<div>
+					<button type="button" class="button-cancel" onclick="closeCustomActionDialog();">Cancel</button>
+				</div>
+				<div class="right">
+					<button type="submit" onclick="saveCustomAction();" class="button-save">Save Custom Action</button>
+				</div>
+			</div>
+		</form>
+	</dialog><!--/custom-action-dialog-->
+
+
+
+
+	<footer>
+	</footer>
+</div><!--/#main-->
+
+
+
+<script src="data.js"></script>
+<script src="main.js"></script>
+
+<script>const whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>
+<script src="https://wow.zamimg.com/js/tooltips.js"></script>
+
+</body>
+</html>
