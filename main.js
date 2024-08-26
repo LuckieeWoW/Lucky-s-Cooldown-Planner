@@ -796,7 +796,12 @@
 
 				// ensure left position is pixel-perfect on a timeline column
 				// console.log(event, ui.position.left, Math.round(ui.position.left / events_column_width_num) * events_column_width_num);
-				ui.position.left = Math.round(ui.position.left / events_column_width_num) * events_column_width_num + .1; // +.1 to ensure we can reach the left-most column.
+				var left_new = Math.round(ui.position.left / events_column_width_num) * events_column_width_num + .1; // +.1 to ensure we can reach the left-most column.
+				if (left_new < 0) {
+					left_new = 0;
+				}
+				ui.position.left = left_new;
+				
 
 				// set the guide's left position
 				var el = document.getElementById('timeline-guide');
